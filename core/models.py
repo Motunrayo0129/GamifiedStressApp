@@ -1,7 +1,6 @@
 import uuid
 from django.db import models
 from django.utils import timezone
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 from user.models import User
 
@@ -18,14 +17,34 @@ class DailyCheckIn(models.Model):
         FAIR = "FAIR", "fair"
         GOOD = "GOOD", "good"
 
+    class StressLevel(models.TextChoices):
+        VERY_HIGH = "VERY_HIGH", "very high"
+        HIGH = "HIGH", "high"
+        MODERATE= "MODERATE", "moderate"
+        VERY_LOW = "VERY_LOW", "very low"
+        LOW = "LOW", "low"
+
+    class FocusLevel(models.TextChoices):
+        VERY_HIGH = "VERY_HIGH", "very high"
+        HIGH = "HIGH", "high"
+        MODERATE = "MODERATE", "moderate"
+        VERY_LOW = "VERY_LOW", "very low"
+        LOW = "LOW", "low"
+
+    class EnergyLevel(models.TextChoices):
+        VERY_HIGH = "VERY_HIGH", "very high"
+        HIGH = "HIGH", "high"
+        MODERATE = "MODERATE", "moderate"
+        VERY_LOW = "VERY_LOW", "very low"
+        LOW = "LOW", "low"
+
+
     check_in_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_checkins')
     check_in_date = models.DateField(auto_now_add=True)
-
-    stress_level = models.IntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
-    energy_level = models.IntegerField(default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
-    focus_level = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
-
+    stress_level = models.CharField(max_length=10, choices=StressLevel.choices, default=StressLevel.MODERATE)
+    focus_level =models.CharField(max_length=10, choices=FocusLevel.choices, default=StressLevel.MODERATE)
+    energy_level =  models.CharField(max_length=10, choices=EnergyLevel.choices, default=StressLevel.MODERATE)
     mood = models.CharField(max_length=10, choices=Mood.choices, default=Mood.HAPPY)
     sleep_quality = models.CharField(max_length=10, choices=SleepQuality.choices, default=SleepQuality.POOR)
 
