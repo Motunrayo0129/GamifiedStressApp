@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from core.models import DailyCheckIn, ChallengeCategory, Challenge, SubChallenge, UserChallenge, UserSubChallenge
+from core.models import DailyCheckIn, ChallengeCategory, Challenge, SubChallenge, UserChallenge, UserSubChallenge, \
+    Badge, UserBadge
 
 
 # Register your models here.
@@ -35,3 +36,12 @@ class UserChallengeAdmin(admin.ModelAdmin):
 @admin.register(UserSubChallenge)
 class UserSubChallengeAdmin(admin.ModelAdmin):
     list_display = ('user_challenge', 'sub_challenge', 'completed', 'completed_at')
+    list_filter = ('completed',)
+
+@admin.register(Badge)
+class BadgeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'is_active')
+
+@admin.register(UserBadge)
+class UserBadgeAdmin(admin.ModelAdmin):
+    list_display = ('badge', 'user', 'earned_at')

@@ -10,5 +10,6 @@ dependencies = [
     "djoser>=2.3.3",
     "mysqlclient>=2.2.7",
     "phonenumbers>=9.0.21",
+    "pillow>=12.1.0",
     "python-dotenv>=1.2.1",
 ]

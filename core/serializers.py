@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.models import (
     DailyCheckIn, ChallengeCategory, Challenge,
-    SubChallenge, UserChallenge, UserSubChallenge
+    SubChallenge, UserChallenge, UserSubChallenge, Badge, UserBadge
 )
 
 
@@ -59,4 +59,20 @@ class UserChallengeSerializer(serializers.ModelSerializer):
             'id', 'challenge', 'status',
             'progress', 'notes',
             'completed_at', 'user_sub_challenges'
+        ]
+
+class BadgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Badge
+        fields = [
+            'id', 'name', 'description', 'icon',
+            'points','is_active'
+        ]
+
+class UserBadgeSerializer(serializers.ModelSerializer):
+    badge = BadgeSerializer(read_only=True)
+    class Meta:
+        model = UserBadge
+        fields = [
+            'id', 'earned_at', 'badge',
         ]
