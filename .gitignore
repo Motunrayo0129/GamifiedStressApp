@@ -110,6 +110,10 @@ media/
 # uv
 uv.lock
 
+# .idea files
+.idea
+.idea/
+
 # Ignore Django Migrations in Development if you are working on team
 
 # Only for Development only
