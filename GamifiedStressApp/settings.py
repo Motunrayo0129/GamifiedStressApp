@@ -48,7 +48,11 @@ INSTALLED_APPS = [
     'djoser',
     'user',
     'core',
+	'notification',
+    'rest_framework_simplejwt',
+	'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+	"django_celery_results",
 ]
 
 REST_FRAMEWORK = {
@@ -165,3 +169,66 @@ DJOSER = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+#message broker where redis gets tasks from
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+
+#where celery stores task results and states
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+#only accept JSON-serialized messages. a security and sanity choice
+CELERY_ACCEPT_CONTENT = ["json"]
+
+#serialize task payloads as JSON
+CELERY_TASK_SERIALIZER = "json"
+
+#serialize task results as JSON
+CELERY_RESULT_SERIALIZER = "json"
+
+#the Timezone celery uses for scheduling and timestamps
+CELERY_TIMEZONE = "UTC"
+
+#this forces celery to operate in UTC internally
+CELERY_ENABLE_UTC = True
+
+#workers ACKnowledge tasks AFTER they finish executing
+#if a worker crashes mid-task, the task isn't lost and will be retried
+CELERY_TASK_ACKS_LATE = True
+
+#if a worker process dies while executing, tell the broker to put the task back on the queue
+CELERY_TASK_REJECT_ON_WORKER_LOST = True
+
+#how many tasks a worker prefetches at once
+#setting this to 1 prevents a single worker from hoarding tasks in memory
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+
+#hard time limit for a task. If a task runs longer than this, it is killed by force
+CELERY_TASK_TIME_LIMIT = 60*60
+
+#soft time limit for a task, meaning celery raises a SoftTimeLimitExceeded exception first
+#this giving your task a chance to clean up before being killed
+CELERY_TASK_SOFT_TIME_LIMIT = 60*55
+
+#this is for redis, it controls how long a task can run
+CELERY_BROKER_TRANSPORT_OPTIONS = {"visibility_timeout": 60*60*2}
+
+#this controls how long task results are kept in the result backend
+CELERY_RESULT_EXPIRES = 60*60
+
+#retry connecting to the broker on startup instead of crashing immediately
+#important if using Docker
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+#tracks when a task transitions to the "STARTED" state
+CELERY_TASK_TRACK_STARTED = True
