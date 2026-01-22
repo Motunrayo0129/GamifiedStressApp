@@ -157,7 +157,12 @@ AUTH_USER_MODEL = 'user.User'
 
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
+	"EMAIL": {
+        "activation": "notification.djoser.ActivationEmail",
+        "confirmation": "notification.djoser.ConfirmationEmail",
+        "password_reset": "notification.djoser.PasswordResetEmail",
+    },
     'TOKEN_MODEL': None,
     'SERIALIZERS': {
         'user_create': 'user.serializers.UserCreateSerializer',

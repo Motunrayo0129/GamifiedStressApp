@@ -1,8 +1,8 @@
 from django.urls import path
 
-from user.views import MyProfile, anonymous_login
+from user.views import MyProfile, AnonymousLogin
 
 urlpatterns = [
     path('auth/profile/', MyProfile.as_view(), name='profile'),
-    path('auth/anonymous/', anonymous_login, name='anonymous login'),
+    path('auth/anonymous/', AnonymousLogin.as_view(), name='anonymous login'),
 ]

@@ -12,6 +12,7 @@ User = get_user_model()
 
 class MyProfile(APIView):
 	permission_classes = [AllowAny]
+	
 	def get(self, request):
 		user = request.user
 		if user.is_anonymous:
@@ -26,20 +27,41 @@ class MyProfile(APIView):
 				'email': user.email,
 			})
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def anonymous_login(request):
-	user = User.objects.create(
-		username=f"anon{generate_random_string(9)}{User.objects.count() + 1}",
-		is_anonymous=True,
-	)
+class AnonymousLogin(APIView):
+	permission_classes = [AllowAny]
+	
+	def post(self, request):
+		user = User.objects.create(
+			username=f"anon{generate_random_string(9)}{User.objects.count() + 1}",
+			is_anonymous=True,
+		)
+		
+		user.set_unusable_password()
+		user.save()
+		refresh = RefreshToken.for_user(user)
+		
+		return Response({
+			'access_token': str(refresh.access_token),
+			'refresh_token': str(refresh),
+			'is_anonymous': user.is_anonymous
+		})
+	
+	
 
-	user.set_unusable_password()
-	user.save()
-	refresh = RefreshToken.for_user(user)
-
-	return Response({
-		'access_token': str(refresh.access_token),
-		'refresh_token': str(refresh),
-		'is_anonymous': user.is_anonymous
-	})
+# @api_view(['POST'])
+# @permission_classes([AllowAny])
+# def anonymous_login(request):
+# 	user = User.objects.create(
+# 		username=f"anon{generate_random_string(9)}{User.objects.count() + 1}",
+# 		is_anonymous=True,
+# 	)
+#
+# 	user.set_unusable_password()
+# 	user.save()
+# 	refresh = RefreshToken.for_user(user)
+#
+# 	return Response({
+# 		'access_token': str(refresh.access_token),
+# 		'refresh_token': str(refresh),
+# 		'is_anonymous': user.is_anonymous
+# 	})
