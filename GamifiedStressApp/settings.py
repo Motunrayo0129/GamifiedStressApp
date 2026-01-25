@@ -80,8 +80,7 @@ ROOT_URLCONF = 'GamifiedStressApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -155,9 +154,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
 
+ACTIVATION_URL = "activate/{uid}/{token}"
+
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
+	"ACTIVATION_URL": "activate/{uid}/{token}",
 	"EMAIL": {
         "activation": "notification.djoser.ActivationEmail",
         "confirmation": "notification.djoser.ConfirmationEmail",

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<body style="font-family: Arial, sans-serif;">
+
+		<p>Hi {{ user.username|default:"there" }},</p>
+
+		<p>
+			Welcome to Mindfulness.
+			You’re one step away from activating your account.
+		</p>
+
+		<p>
+			Click the link below to activate your account:
+		</p>
+
+		<p>
+			<a href="{{ activation_url }}">
+				Activate my account
+			</a>
+		</p>
+
+		<p>
+			If you didn’t create this account, you can ignore this email.
+		</p>
+
+		<p>
+			Take care,<br>
+			The Mindfulness Team
+		</p>
+
+	</body>
+</html>

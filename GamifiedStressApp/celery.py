@@ -9,5 +9,5 @@ app = Celery("GamifiedStressApp")
 #namespace='CELERY' means all celery configuration keys should have a `CELERY_` prefix in settings.py.
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
-#load task modules from all registered Django app configurations
+#load task modules (tasks.py) from all registered Django app configurations
 app.autodiscover_tasks()
