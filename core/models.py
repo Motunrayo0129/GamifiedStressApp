@@ -24,13 +24,6 @@ class DailyCheckIn(models.Model):
         VERY_LOW = "VERY_LOW", "very low"
         LOW = "LOW", "low"
 
-    class FocusLevel(models.TextChoices):
-        VERY_HIGH = "VERY_HIGH", "very high"
-        HIGH = "HIGH", "high"
-        MODERATE = "MODERATE", "moderate"
-        VERY_LOW = "VERY_LOW", "very low"
-        LOW = "LOW", "low"
-
     class EnergyLevel(models.TextChoices):
         VERY_HIGH = "VERY_HIGH", "very high"
         HIGH = "HIGH", "high"
@@ -43,7 +36,6 @@ class DailyCheckIn(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='daily_checkins')
     check_in_date = models.DateField(auto_now_add=True)
     stress_level = models.CharField(max_length=10, choices=StressLevel.choices, default=StressLevel.MODERATE)
-    focus_level =models.CharField(max_length=10, choices=FocusLevel.choices, default=StressLevel.MODERATE)
     energy_level =  models.CharField(max_length=10, choices=EnergyLevel.choices, default=StressLevel.MODERATE)
     mood = models.CharField(max_length=10, choices=Mood.choices, default=Mood.HAPPY)
     sleep_quality = models.CharField(max_length=10, choices=SleepQuality.choices, default=SleepQuality.POOR)
@@ -101,7 +93,9 @@ class UserChallenge(models.Model):
     notes = models.TextField(blank=True, null=True)
 
     def mark_completed(self):
+
         from core.services import award_badges
+
         self.status = 'COMPLETED'
         self.progress = 100
         self.completed_at = timezone.now()
@@ -111,7 +105,7 @@ class UserChallenge(models.Model):
 
     def update_progress(self):
         total_points = sum(
-            subchall.points for subchall in self.challenge.subchallenges.all()
+            sub.points for sub in self.challenge.sub_challenges.all()
         )
 
         if total_points == 0:
@@ -119,15 +113,19 @@ class UserChallenge(models.Model):
             return
 
         completed_points = sum(
-            usersubchall.points for usersubchall in
-            self.user_sub_challenges.filter(completed=True)
+            usc.sub_challenge.points
+            for usc in self.user_sub_challenges.filter(completed=True)
         )
 
-        self.progress = completed_points / total_points * 100
+        self.progress = int((completed_points / total_points) * 100)
+
         if self.progress >= 100:
             self.mark_completed()
         else:
             self.save()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.challenge.title} ({self.status})"
 
 
 class UserSubChallenge(models.Model):
