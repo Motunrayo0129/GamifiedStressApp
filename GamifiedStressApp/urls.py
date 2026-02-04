@@ -25,6 +25,8 @@ urlpatterns = [
     path('', include('user.urls')),
     path('auth/', include('djoser.urls.jwt')),
     path('', include('core.urls')),
+	path('', include('accounts.urls')),
+    # path('auth/', include("dj_rest_auth.urls")),
 ]
 
 if settings.DEBUG:

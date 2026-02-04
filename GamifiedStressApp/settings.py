@@ -44,16 +44,32 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+	"django.contrib.sites",
     'rest_framework',
     'djoser',
     'user',
     'core',
 	'notification',
+	'accounts',
     'rest_framework_simplejwt',
 	'rest_framework_simplejwt.token_blacklist',
+	'dj_rest_auth',
+	'dj_rest_auth.registration',
     'corsheaders',
-	"django_celery_results",
+	'django_celery_results',
+	'allauth',
+	'allauth.account',
+	'allauth.socialaccount',
+	'allauth.socialaccount.providers.google',
+	'anymail',
 ]
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
 
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
@@ -65,14 +81,23 @@ REST_FRAMEWORK = {
     )
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:9000",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:9000",
+]
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'GamifiedStressApp.urls'
@@ -154,9 +179,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.User'
 
+#allauth stuff
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+#djoser template stuff
 ACTIVATION_URL = "activate/{uid}/{token}"
 
 DJOSER = {
+	"LOGIN_FIELD": "email",
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": [
+        "http://localhost:9000",
+	    "http://127.0.0.1:9000",
+    ],  #change this to frontend url when it's ready, change on Google cloud as well
     'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
 	"ACTIVATION_URL": "activate/{uid}/{token}",
@@ -165,7 +201,6 @@ DJOSER = {
         "confirmation": "notification.djoser.ConfirmationEmail",
         "password_reset": "notification.djoser.PasswordResetEmail",
     },
-    'TOKEN_MODEL': None,
     'SERIALIZERS': {
         'user_create': 'user.serializers.UserCreateSerializer',
         'user': 'user.serializers.UserSerializer',
@@ -173,10 +208,27 @@ DJOSER = {
     }
 }
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
+REST_USE_JWT = True
+
+REST_AUTH_TOKEN_MODEL = None
+
+REST_AUTH = {
+	"USE_JWT": True,
+	"TOKEN_MODEL": None,
 }
 
+REST_AUTH_SERIALIZERS = {
+    "JWT_SERIALIZER": "dj_rest_auth.serializers.JWTSerializer",
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=180),
+	"REFRESH_TOKEN_LIFETIME": timedelta(days=365),
+	"ROTATE_REFRESH_TOKENS": False,
+	"BLACKLIST_AFTER_ROTATION": True,
+}
+
+#email stuff
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
 EMAIL_HOST = os.getenv("EMAIL_HOST")
@@ -188,6 +240,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
+#celery stuff
 #message broker where redis gets tasks from
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 
@@ -239,3 +292,42 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 #tracks when a task transitions to the "STARTED" state
 CELERY_TASK_TRACK_STARTED = True
+
+SOCIALACCOUNT_ONLY = True
+
+SOCIALACCOUNT_ADAPTER = "accounts.adapters.SocialAccountAdapter"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        "APPS": [
+            {
+                "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+                "secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+                "key": "",
+                "settings": {
+                    # You can fine tune these settings per app:
+                    "scope": [
+                        "profile",
+                        "email",
+	                    "openid",
+                    ],
+                    "auth_params": {
+                        "access_type": "online",
+                    },
+                },
+            },
+        ],
+        # The following provider-specific settings will be used for all apps:
+        "SCOPE": [
+            "profile",
+            "email",
+	        "openid",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    }
+}
