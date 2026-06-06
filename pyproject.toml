@@ -1,22 +1,23 @@
 [project]
-name = "gamifiedstressapp"
+name = "zentra"
 version = "0.1.0"
-description = "Add your description here"
+description = """s a mental health support platform that helps users track daily stress and build healthy habits through gamified challenges.
+It promotes early awareness, self-care, and consistency using check-ins, points, and simple wellness activities."""
 requires-python = ">=3.13"
 dependencies = [
-    "celery>=5.6.2",
-    "dj-rest-auth>=5.0.2",
-    "django>=6.0.1",
-    "django-allauth>=65.14.0",
-    "django-anymail>=14.0",
-    "django-celery-results>=2.6.0",
-    "django-cors-headers>=4.9.0",
-    "django-extensions>=4.1",
-    "django-phonenumber-field>=8.4.0",
-    "djoser>=2.3.3",
-    "mysqlclient>=2.2.7",
-    "phonenumbers>=9.0.21",
-    "pillow>=12.1.0",
-    "python-dotenv>=1.2.1",
-    "redis>=7.1.0",
+    "celery==5.6.2",
+    "dj-rest-auth==5.0.2",
+    "django==6.0.1",
+    "django-allauth==65.14.1",
+    "django-anymail==14.0",
+    "django-celery-results==2.6.0",
+    "django-cors-headers==4.9.0",
+    "django-extensions==4.1",
+    "django-phonenumber-field==8.4.0",
+    "djoser==2.3.3",
+    "mysqlclient==2.2.7",
+    "phonenumbers==9.0.21",
+    "pillow==12.2.0",
+    "python-dotenv==1.2.2",
+    "redis==7.1.0",
 ]
