@@ -66,7 +66,7 @@ class BadgeSerializer(serializers.ModelSerializer):
         model = Badge
         fields = [
             'id', 'name', 'description', 'icon',
-            'points','is_active'
+            'points_required', 'is_active'
         ]
 
 class UserBadgeSerializer(serializers.ModelSerializer):
