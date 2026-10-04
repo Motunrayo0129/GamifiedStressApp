@@ -28,13 +28,13 @@ class DailyCheckInTests(TestCase):
                 DailyCheckIn.objects.create(user=self.user)
 
     def test_weekly_analytics_maps_text_levels_to_scores(self):
-        first = DailyCheckIn.objects.create(
+        first: DailyCheckIn = DailyCheckIn.objects.create(
             user=self.user,
-            stress_level=DailyCheckIn.StressLevel.HIGH,
-            energy_level=DailyCheckIn.EnergyLevel.LOW,
-            focus_level=DailyCheckIn.FocusLevel.MODERATE,
+            stress_level=DailyCheckIn.Level.HIGH,
+            energy_level=DailyCheckIn.Level.LOW,
+            focus_level=DailyCheckIn.Level.MODERATE,
         )
-        second = DailyCheckIn.objects.create(
+        second: DailyCheckIn = DailyCheckIn.objects.create(
             user=User.objects.create_user(
                 username="other-user",
                 email="other@example.com",
@@ -43,9 +43,9 @@ class DailyCheckInTests(TestCase):
         )
         second.user = self.user
         second.check_in_date = first.check_in_date - timedelta(days=7)
-        second.stress_level = DailyCheckIn.StressLevel.LOW
-        second.energy_level = DailyCheckIn.EnergyLevel.VERY_HIGH
-        second.focus_level = DailyCheckIn.FocusLevel.HIGH
+        second.stress_level = DailyCheckIn.Level.LOW
+        second.energy_level = DailyCheckIn.Level.VERY_HIGH
+        second.focus_level = DailyCheckIn.Level.HIGH
         second.save(update_fields=["user", "check_in_date", "stress_level", "energy_level", "focus_level"])
 
         trends = list(weekly_stress_trend(self.user))
@@ -63,8 +63,8 @@ class BadgeTests(TestCase):
             email="badge@example.com",
             password="test-password",
         )
-        category = ChallengeCategory.objects.create(name="Mindfulness")
-        challenge = Challenge.objects.create(
+        category: ChallengeCategory = ChallengeCategory.objects.create(name="Mindfulness")
+        challenge: Challenge = Challenge.objects.create(
             title="Take a break",
             category=category,
             points=5,
@@ -75,7 +75,7 @@ class BadgeTests(TestCase):
             status="COMPLETED",
             progress=100,
         )
-        badge = Badge.objects.create(name="First step", points_required=5)
+        badge: Badge = Badge.objects.create(name="First step", points_required=5)
 
         award_badges(user)
 
