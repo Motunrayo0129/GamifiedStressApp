@@ -2,8 +2,6 @@ from rest_framework import routers
 
 from . import views
 
-from core.views import UserSubChallengeViewSet, DailyCheckInViewSet
-
 router = routers.DefaultRouter()
 
 router.register('daily-checkins', views.DailyCheckInViewSet, basename='daily-checkins')
@@ -16,6 +14,3 @@ router.register('badges', views.BadgeViewSet, basename='badges')
 router.register('user-badges', views.UserBadgeViewSet, basename='user-badges')
 
 urlpatterns = router.urls
-
-
-
