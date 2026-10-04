@@ -12,12 +12,17 @@ dependencies = [
     "django-anymail==14.0",
     "django-celery-results==2.6.0",
     "django-cors-headers==4.9.0",
-    "django-extensions==4.1",
     "django-phonenumber-field==8.4.0",
+    "django-stubs-ext>=6.1.1",
     "djoser==2.3.3",
     "mysqlclient==2.2.7",
     "phonenumbers==9.0.21",
     "pillow==12.2.0",
     "python-dotenv==1.2.2",
     "redis==7.1.0",
+]
+[dependency-groups]
+dev = [
+    "django-extensions==4.1",
+    "django-stubs>=6.1.1",
 ]
